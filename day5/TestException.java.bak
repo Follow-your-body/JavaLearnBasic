@@ -1,0 +1,41 @@
+package day5;
+import java.util.Date;
+
+public class TestException {
+
+	public static void main(String[] args) {
+		// 数组下标异常（ArrayIndexOutOfBoundsException）
+		try {
+			String[] str = new String[9];
+			System.out.println(str[-9]);			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		// 算数异常（ArithmeticException）
+		try {
+			int i1 = 3;
+			System.out.println(i1 / 0);			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}		
+
+		// 类型转换异常（ClassCastException）
+		try {
+			Object obj = new Date();
+			String str = (String)obj;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		// 空指针异常（NullPointerException）
+		try {
+			Person p = new Person();
+			p = null;  // 将对象的初始化清空
+			System.out.println(p.toString());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
