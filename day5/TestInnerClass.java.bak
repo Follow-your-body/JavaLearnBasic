@@ -1,0 +1,55 @@
+/*
+内部类
+	定义：允许一个类的定义位于另一个类的内部，前者称为内部类，后者为外部类
+	inner class
+	inner class:可以使用外部类的私有数据（他属于外部类的额成员，同一个成员之间可以相互访问）
+		外部类调用内部类的属性时，其方法为：内部类.成员，或者内部类对象.成员
+	分类：成员内部类，局部内部类+匿名内部类
+	练习 TestInnerClass.java
+*/
+package day5;
+
+public class TestInnerClass {
+
+	public static void main(String[] args) {
+		//创建静态内部类的对象：可以直接通过外部类调用静态内部类的构造器
+		Person.Dog d = new Person.Dog();//Person.new Dog();
+		//Person.Bird b = new Person.Bird();
+		//创建非静态的内部类的对象：必须先创建外部类的对象，通过外部类的对象调用内部类的构造器
+		Person p = new Person();
+		Person.Bird b = p.new Bird();//new p.Bird();
+		b.info();
+		b.setName("杜鹃");
+	}
+
+}
+
+class Person {
+	String name = "danay";
+	int age;
+	// 成员内部类（非静态内部类，类内部方法外）
+	class Bird {
+		int id;		
+		public Bird() {			
+		}
+		public void setName(String name) {
+			System.out.println(name);
+			System.out.println(Person.this.name);
+		}
+		public void info() {
+			show();
+		}		
+	}
+	//成员内部类(静态内部类，类内部方法外)
+	static class Dog{			
+	}
+		
+	public void show(){
+		System.out.println("我是show()方法");
+	}
+		
+	public void method1(){
+		class A{				
+		}
+	}
+}
