@@ -1,0 +1,26 @@
+
+package day3;
+
+public class TestSingleton1 {
+
+	public static void main(String[] args) {
+		Singleton1 s1 = Singleton1.getSingleton();
+		Singleton1 s2 = Singleton1.getSingleton();
+		System.out.println(s1 == s2);  //判断两个别名是不是同一个实例
+
+	}
+}
+// 懒汉式
+class Singleton1 {
+	private static Singleton1 instance = null;
+	// 私有化构造器（在类外不能调用，想创建对象只能在该类的内部创建）
+	private Singleton () {
+	}
+	// 提供公共的方法来调用该对象(因为不能实例化，所以只能用该类来调：static)
+	public static Singleton getSingleton() {
+		if(instance == null) {
+			instance = new Singleton1();
+		}
+		return instance;
+	}
+}

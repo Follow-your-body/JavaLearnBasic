@@ -1,0 +1,53 @@
+/*
+ * 创建一个Person类
+ * 属性有：name+age+sex
+ * 方法有：
+ * 		study() void，用来输出：studying字符串
+ * 		showAge() void:用来输出年龄
+ * 		addAge(int i) int :用来给年龄加i
+ * 		circleArea(int r) void : 用来计算圆的面积，并输出{}岁的{}来计算半径为{}的面积为{}
+ * 创建两个对象，分别对属性赋值，分别调用类中所有的方法
+ */
+package com.lzw;
+
+public class Person {
+	private String name;
+	private int age;
+	private int sex;
+	
+	public static void study() {
+		System.out.println("studying");
+	}
+	
+	public void showAge() {
+		System.out.println(age);
+	}
+	
+	public int addAge(int i) {
+		return age += i;	
+	}
+	
+	public void circleArea(int r) {
+		System.out.println(age + "岁的" + name + "来计算半径为" + r + "的圆的面积为：" + (float)Math.PI * r * r);
+	}
+	
+
+	public static void main(String[] args) {
+		Person p1 = new Person();
+		p1.age = 12;
+		p1.name = "danay";
+		p1.sex = 1;
+		p1.study();
+		p1.addAge(2);
+		p1.circleArea(2);
+		
+		Person p2 = new Person();
+		p2.age = 13;
+		p2.name = "anna";
+		p2.sex = 0;
+		p2.study();
+		p2.addAge(2);
+		p2.circleArea(4);
+	}
+
+}
