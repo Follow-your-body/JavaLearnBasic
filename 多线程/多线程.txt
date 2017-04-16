@@ -1,0 +1,368 @@
+（day14+day15）
+概念
+	程序，进程，线程的概念
+	Java中多线程的创建和使用
+		继承Tread类与实现Runnable接口（重写run(),start()开启）
+		Tread类的主要方法
+	线程的同步（线程安全-->同步代码块+同步方法）
+	线程的通信
+理解
+	1程序，进程，线程的概念
+		程序：一段静态的代码
+		进程：正在运行的一个程序
+		线程：进程可进一步细化为线程，是一个程序内部的一条执行路径
+		若一个程序可同一时间执行多个线程，是一个程序内部的一条执行路径
+
+	2Java中多线程的创建和使用
+		2.1.1继承Thread类
+			练习:实现三线程执行，都输出0-100之间的所有数值
+			class SubTread extends Thread {
+				public void run() {
+					for(int i = 0; i <= 100; i++) {
+						System.out.println(Thread.currentThread().getName() + i);
+					}
+				} 
+			}			
+			public class TestThread {
+				public static void main(String[] args) {
+					SubTread st1 = new SubTread();
+					SubTread st2 = new SubTread();
+					st1.start();
+					st2.start();
+					st1.run();
+					for(int i = 0; i <= 100; i++) {
+						System.out.println(Thread.currentThread().getName() + i);
+					}
+				}
+			}
+			【注意事项】
+			1.创建一个线程子类，继承Tread接口
+			2.子类中重写run（），方法内实现子线程要完成的功能
+			3.创建子线程的对象
+			4.调用子线程的start方法(每个线程的start（）只能执行一次)
+			5.如果调用子线程的run（），那属于单线程
+			练习： 模拟火车站售票窗口，开启三个窗口售票，票数总共为100张
+				（day14）TestWindow.java
+
+		2.1.2Thread的常用方法：
+			 * 1.start()：启动线程并执行相应的run()方法
+			 * 2.run():子线程要执行的代码放入run()方法中
+			 * 3.currentThread()：静态的，调取当前的线程
+			 * 4.getName():获取此线程的名字
+			 * 5.setName():设置此线程的名字
+			 * 6.yield():调用此方法的线程释放当前CPU的执行权
+			 * 7.join():在A线程中调用B线程的join()方法，表示：当执行到此方法，A线程停止执行，直至B线程执行完毕，A线程再接着join()之后的代码执行
+			 * 8.isAlive():判断当前线程是否还存活
+			 * 9.sleep(long l):显式的让当前线程睡眠l毫秒
+			 * 10.线程通信：wait()   notify()  notifyAll()
+			   设置线程的优先级
+			 * getPriority() ：返回线程优先值 (抢占CPU的可能性)
+			 * setPriority(int newPriority) ：改变线程的优先级
+
+		2.2实现Runnable接口
+			练习：实现三线程执行，都输出0-100之间的所有数值
+			public class TestTread1 {
+				public static void main(String[] args) {
+					SubTread12 st1 = new SubTread12();
+					Thread t1 = new Thread(st1);
+					Thread t2 = new Thread(st1);
+					Thread t3 = new Thread(st1);
+					t1.start();
+					t2.start();
+					t3.start();
+				}
+			}
+			class SubTread12 implements Runnable {
+				public void run() {
+					for(int i = 0; i <= 100; i++) {
+						System.out.println(Thread.currentThread().getName() + i);
+					}
+				} 
+			}
+			【注意事项】
+			 1.创建一个实现了Runnable接口的类
+			 2.实现接口的抽象方法
+			 3.创建一个Runnable接口实现类的对象
+			 4.将此对象作为形参传递给Thread类的构造器中，创建Thread类的对象，此对象即为一个线程（一个对象可以创建多个这样的线程）
+			 5.调用start()方法：启动线程并执行run()
+			 Runnable接口类和Thread类的区别
+				1.接口的形式解决了单继承的问题
+				2.多线程如果共享一份数据，用实现的方式比较好（一个对象对应多个线程）
+				练习：实现接口类，模拟火车站售票窗口，开启三个窗口售票，票数总共为100张
+					(day14) TestWindow1.java
+	
+	3多线程的优点
+		1.利用界面的优势
+		2.提高计算机系统CPU的利用率
+		3.将进程分为多给多线程，便于维护
+
+	4.线程的声明周期(1.新建+2.就绪+3.运行+4.阻塞+5.死亡)
+	
+	5.线程的同步（同步代码块+同步方法+synchronized）
+		来源
+		1.线程安全问题存在：不同窗口出现的票是一样的
+			由于一个线程在操作共享数据过程中，未执行完毕的状况下，另外的线程参与进来，导致共享数据存在了安全问题
+		2.解决途径：必须让一个线程的共享数据完毕之后，其他的线程才有机会参与共享数据的操作
+			即线程的同步（同步代码块+同步方法）
+			方式一：同步代码块（接口+继承）
+				synchronized(对象<同步监视器>){//需要被同步的代码}
+					需要被同步的代码：操作共享数据的代码
+					共享数据：多个对象共同操作的同一数据
+					同步监视器：由一个类的对象来充当，哪个线程获取此监视器，谁就执行大括号里被同步的代码（锁）
+					练习：实现接口类，模拟火车站售票窗口，开启三个窗口售票，票数总共为100张
+						，用同步代码块，解决线程安全问题。
+					class Window1 implements Runnable{
+						private int tickets = 100;
+						int sum = 0;
+						Object obj = new Object();  // 同步监视器						
+						public void run() {	 						
+							while(tickets > 0) {    //　循环必须在锁的前面（不然只能有一个线程获得该数据）
+								synchronized(obj) {			// synchronized(对象<同步监视器>){//需要被同步的代码}
+									tickets -= 1;
+									try {
+										Thread.sleep(10);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+									sum += 1;
+									System.out.println(Thread.currentThread().getName() + "卖完后还剩："+ tickets + "张");
+								}
+							}
+						}						
+					}
+					【注意事项】
+					1. 同步监视器即为对象，该对象可以是任意谁的对象（如果不想在创建一个对象，可以用this关键字）
+					2. 被共享的同步操作数据一定要放在同步代码快中，即synchronized代码块中
+					3. 所有的线程必须公用一把锁（创建的对象必须是成员变量的对象<必须是唯一的>）
+					4. 对于对象接口来说，创建的类可能是唯一的，可以用this作为锁，但是继承（Thread）中创建的对象是多个，this就不是唯一的了，所以使用的时候需慎重！
+					5. 对象接口锁用this可以，继承最好创建一个唯一的锁
+					６.共享数据时，一定要先看是否有数据再开锁，不然就会出现一个线程一直握着这把锁的情况（while在synchronized代码块之前）
+
+			方式二：同步方法(接口)
+				public synchronized void show(String name) {……}
+				将处理同步数据的程序写到方法中
+				class Window1 implements Runnable{
+					private int tickets = 100;
+					
+					public void run() {
+							while(tickets > 0) {
+								show();
+						}
+					}
+					
+					public synchronized void show() {   // 同步监视器默认为this
+						if(tickets > 0) {	   // 先去判断数据，再做下一步		
+							tickets -= 1;
+							try {
+								Thread.sleep(10);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							sum += 1;
+							System.out.println(Thread.currentThread().getName() + "卖完后还剩："+ tickets + "张");
+						}
+					}					
+				}
+				【注意事项】
+				1.继承中多线程需要创建多个对象，所以继承中解决线程安全问题，用同步代码块，不用同步方法
+			
+		3.懒汉式的多线程问题（单例问题）
+			练习
+				class TestSingleton {
+					public static void main(String[] args) {
+						Singleton s1 = Singleton.getInstance();
+						Singleton s2 = Singleton.getInstance();
+						System.out.println(s1 == s2);
+					}
+				}
+
+				class Singleton {
+					private Singleton() {}
+					public static Singleton instance = null;
+					
+					public static Singleton getInstance() {
+						// 这里加一个if，线程来了之后先判断是否被实例化，如果被实例化了，该线程就不需要等待了（因为该类是单例模式）
+						if(instance == null) {   
+							synchronized(Singleton.class) {
+								if(instance != null) {
+									instance  = new Singleton();
+								}
+								return instance;
+							}
+						}
+						return instance;
+					}
+				}
+				【注意事项】
+				1.多線程會出現創建多個實例化的問題，使用同步代碼塊的方式
+				2.这里的实例化同步监视器使用本身：类名.class，如Singleton.class
+		
+		4.同步练习
+			《a》银行有一个账户，有两个储户分别向同一个账户存3000元，每次存1000，
+				，存3 次，每次存完打印账户余额。
+				该程序是否有安全问题，如果有，如何解决？
+				思路
+				是不是设计都多线程
+				是否有共享数据（如果有需要考虑同步的处理问题）
+		5.死锁的问题
+			定义：两个线程同时运行同一个程序，两个线程都已经获取了一部分资源，互不相让
+				处理线程同步时容易出现
+
+
+	线程的通信
+		1.wait():当前线程挂起+放弃CPU，再次排队
+		2.notify()：唤醒正在排队等待资源的额线程中最优先级的最高结束者
+		3.notifyAll()：唤醒正在排队的所有线程结束等待
+		
+		练习1：连个线程交替输出1-100之间的数值
+			package day15;
+
+			public class TestCommunication {
+				public static void main(String[] args) {
+					Communication com = new Communication();
+					Thread t1 = new Thread(com);
+					Thread t2 = new Thread(com);
+					
+					t1.setName("1-");
+					t2.setName("2-");
+					
+					t1.start();
+					t2.start();
+				}
+
+			}
+
+			class Communication implements Runnable {
+				static int number = 1;
+				Object obj = new Object();
+				
+				public void run() {
+					while(true) {
+						synchronized(obj) {
+							if(number <= 100) {
+							System.out.println(Thread.currentThread().getName() + number++);
+							try {
+								obj.notify();
+								obj.wait();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							} else {
+								break;
+							}
+						}
+					}
+				}
+			}
+			【注意事项】
+			1 wait():一旦一个线程执行到wait()，就释放当前的锁。
+			2 notify()/notifyAll():唤醒wait的一个或所有的线程
+			3 多线程+同步（同步代码块）+(先唤醒等待的线程，然后释放现在的线程)
+
+		练习2：生产者/消费者问题
+			生产者（Productor）将产品交给店员（Clerk），而消费者（Customer）从店员处取走产品，
+			店员一次只能持有固定数量的产品（比如：20），如果生产者试图生产更多的产品，店员会
+			叫生产者停一下，如果店中有空位放产品了再通知生产者继续生产；如果店中没有产品了，
+			店员会告诉消费者等一下，如果店中有产品了再通知消费者来取走产品。
+			这里可能出现的问题
+				生产者比消费者快时，消费者会漏掉一些数据没有取到
+				消费者比生产者快时，消费者会取相同的数据
+			分析
+				是不是有多线程？
+					有，生产者+消费者+店员
+				有没有共享数据？
+					有：店员（产品数量）--》店员不能作为线程
+					共享数据都干什么：产品加减
+				是否有线程通信？
+					有，店员通知生产者停产+通知消费者没有产品等待
+					-->共享数据类中需要加有通知
+			程序：（day15）TestProductorComsume.java
+				class Clerk { // 店员
+					static int product = 0;
+					
+					public synchronized void addProduct() {
+						while(true) {
+							if(product < 20) {
+								notify();
+								product++;
+								System.out.println(Thread.currentThread().getName() + "生产了第" + product + "件产品。");
+								try {
+									Thread.currentThread().sleep(100);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							} else {
+								try {
+									wait();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+					
+					public synchronized void consumeProduct() {
+						while(true) {
+							if(product > 0) {
+								notify();
+								System.out.println(Thread.currentThread().getName() + "消费了第" + product + "件产品。");
+								product--;
+								try {
+									Thread.currentThread().sleep(100);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							} else {
+								try {
+									wait();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				}
+
+				class Customer implements Runnable { // 消费者
+					Clerk clerk;
+					public Customer(Clerk clerk) {
+						this.clerk = clerk;
+					}
+					
+					public void run() {
+						clerk.consumeProduct();
+					}
+				}
+
+				class Productor implements Runnable{ // 生产者
+					
+					Clerk clerk;
+					public Productor(Clerk clerk) {
+						this.clerk = clerk;
+					}
+					
+					public void run() {
+						clerk.addProduct();
+					}
+				}
+
+				public class TestProductorComsume {
+					public static void main(String[] args) {
+						Clerk clerk = new Clerk();
+						Customer c = new Customer(clerk);
+						Productor p = new Productor(clerk);
+						Thread t1 = new Thread(c);
+						Thread t2 = new Thread(p);
+						
+						t1.setName("消费者");
+						t2.setName("生产者");
+						
+						t1.start();
+						t2.start();		
+					}
+				}

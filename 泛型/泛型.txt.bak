@@ -1,0 +1,164 @@
+泛型(集合的高级应用)
+		核心思想：把一个集合中的内容限制为一个特定的数据类型
+		来源（TestGeneric.java中testgeneric1（））
+			>1解决元素存储的安全问题<本来想存储String类型的数据，但是存储时有可能该数据不符合要求>
+			>2解决获取数据元素时，需要类型强转的问题<强转可能出现类型转换的异常>
+			>3使用方式：集合类型<引用数据类型> 集合变量名 = new 该集合类型中的类名<>();
+				    集合类型<强制引用数据类型> 集合变量名 = 强制转换名.对应的方法;
+		使用途径
+			在集合中使用泛型
+			自定义泛型类，泛型接口，泛型方法
+			泛型与继承的关系
+			通配符？（理解）
+		分别解析
+			1.在集合中使用泛型
+				Collection
+					Set：TestGeneric.java中testgeneric2（）
+					List：TestGeneric.java中testgeneric2（）
+				Map：TestGeneric.java中testgeneric2（）
+				练习：TestGeneric.java
+					public void testgeneric2() {
+						// 在集合中使用类型(只能是数据类型不能是基本数据类型)
+						List<Integer> list = new ArrayList<Integer>();
+						list.add(122);
+						list.add(12);
+						list.add(23);
+						// 此处没有添加泛型符合的类型，编译就会报错
+						// The method add(Integer) in the type List<Integer> is not applicable for the arguments (String)
+						// list.add("22");
+						// 遍历的时候不用类型的强制转换，类型编程了定义的数据类型（此处为Integer）
+						for(Integer obj : list) {
+							System.out.println(obj);
+						}
+						
+						// map举例
+						Map<String, Integer> map = new HashMap<>();
+						map.put("danay", 12);
+						map.put("anna", 11);
+						map.put("sillive", 10);
+						System.out.println(map);
+						
+						// 将Map对按Set来存(类型为Map.Entry<String, Integer>)
+						Set<Map.Entry<String, Integer>> set = map.entrySet();
+						for(Map.Entry<String, Integer> obj : set) {
+							System.out.println(obj.getValue());
+						}						
+					}
+
+			2.自定义泛型类，泛型接口，泛型方法
+				泛型类：Order.java，调用TestGeneric.java中的testOrder（）
+				理解：处理未定义的数据
+				练习：TestGeneric.java   Order.java
+					public class Order<E> {   // 泛型类
+						private String orderId;
+						private E t;
+						List<E> list = new ArrayList<>();   // 泛型类集合
+						
+						public void add() {
+							list.add(t);
+						}
+
+						public String getOrderId() {
+							return orderId;
+						}
+
+						public void setOrderId(String orderId) {
+							this.orderId = orderId;
+						}
+
+						public E getT() {    // 泛型方法
+							return t; 
+						}
+
+						public void setT(E t) {  // 泛型方法
+							this.t = t;
+						}
+						
+						// 声明泛型方法(调用时指明既可)
+						public <E> E getE(E e) {
+							return e;
+						}
+						
+						public static void show() {
+							// 如果该类为泛型，类中使用到该泛型的泛型方法不能类中泛型的static类型
+							E e;
+							System.out.println(e);
+							// 不能再try-catch的形参中使用类中定义的泛型类型
+							try {
+								int i;
+							} catch (E e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+						
+						public static <F> void setF(F f) {   // 这个泛型方法可以是static
+							F f1 = f;
+						}
+
+					}
+					
+
+			3.泛型与继承的关系
+				泛型和继承的关系（泛型中的数据类型是不可以有这样的类型）
+				练习 TestGeneric.java中的testgeneric3（）
+				如果该类为泛型，类中使用到该泛型的泛型方法不能是static类型
+				不能再try-catch的形参中使用类中定义的泛型类型
+				练习 Order.java中show()方法
+					public void testgeneric3() {
+						// 普通数据类型子类中的变量数值是可以赋值给父类的变量
+						Object obj = null;
+						String str = "ASD";
+						obj = str;
+						System.out.println(obj);
+						
+						// 泛型和继承的关系（泛型中的数据类型是不可以有这样的类型）	
+						List<Object> list1 = new ArrayList<>();
+						list1.add(123);
+						List<String> list11 = new ArrayList<>();
+						list11.add("AA");
+						// 类A如果是类B的子集，那么类list<A>不是list<B>的子集
+						// Type mismatch: cannot convert from List<String> to List<Object>
+						// list1 = list11;
+					}						
+
+			4.通配符？（理解）
+				list<A>和list<B>都是list<?>的子类
+					允许遍历对象
+					不允许写入对象（null可以）
+				？extends A:可以存放A及其子类(<=)
+				？super A:可以存放A及其父类（>=）
+				练习 TestGeneric.java中的testgeneric4（）
+			
+			练习
+				public void testgeneric4(){
+					// list<A>和list<B>都是list<?>的子类
+					List<?> list = null;
+					List<Object> list1 = new ArrayList<>();
+					List<String> list2 = new ArrayList<>();
+					List<Integer> list3 = new ArrayList<>();
+					list = list2;
+					list = list1;
+							
+					// ？extends A:可以存放A及其子类(<=)
+					List<? extends Number> list4 = null;
+					// 此处为<=之前类才可以，Object >= Number >= Integer
+					// list4 = list1;   // 这个范围大于Number
+					list4 = list3;		
+							
+					// ？super A:可以存放A及其父类（>=）
+					List<? super Number> list5 = null;
+					// 此处为>=之前类才可以，Object >= Number >= Integer
+					list5 = list1;
+					// list5 = list3;		// 这个范围小于Number
+				
+					// list通配符类型遍历
+					Iterator<?> interator = list.iterator();
+					while(interator.hasNext()) {
+						System.out.println(interator.next());
+					}						
+				}
+				
+				集合中使用泛型：Employee1.java  Employee.java  MyDate.java TestEmployee.java
+				自定义泛型类+方法的使用：User.java  DAO.java TestDAO.java
+			

@@ -1,0 +1,44 @@
+集合类
+	特点：长度不固定的数组
+	Collection接口
+		add(E e)+remove(Object o)+isEmpty()+iterator()+size()
+		练习：RestCollection.java
+
+	Collection子接口之二
+		List接口（元素有序+可重复）
+			ArrayList（主要实现类）
+				特点：增+删+改+查+插+长度-动态数组（顺序实现）
+				新增加的方法
+					void add(int index, Object ele)：增
+					Object remove(int index)：删
+					Object set(int index, Object ele)：改
+					Object get(int index)：查
+					boolean addAll(int index, Collection eles)：插			
+					int indexOf(Object obj)：obj首次出现的位置
+					int lastIndexOf(Object obj)：obj最后出现的位置			
+					List subList(int fromIndex, int toIndex)：切片
+				常用的方法
+					增（add） 删(remove,索引/值) 改（set） 查（get） 插（add（int index， Object obj）长度（size）） 	
+			LinkList（对于频繁的插入和删除操作）
+				特点：底层拿链表实现
+				方法：和ArrayList完全一样	
+			Vector（不用这个）
+				特点：古老的实现类+线程安全的
+			练习：TestList.java
+	
+遍历的方式
+	for循环
+		对象：数组
+	增强for循环
+		对象：数组+集合对象
+	迭代器
+		对象：集合对象
+	练习 TestIterator.java
+快捷键
+	Alt+上下箭头，移动改行
+	Alt+Ctrl+上下箭头，复制该行到某一行
+	Ctrl+D：删除该行
+	添加快捷键：sysout
+		windows-->preferences——>General——>keys
+		——>keys中找到Content Assist——>在Binding中改成Atl+/——>点击OK既可
+

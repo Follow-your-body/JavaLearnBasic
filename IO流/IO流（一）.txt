@@ -1,0 +1,303 @@
+（学习时间：day12）
+	主要内容
+		1.重点
+		Java.io.File类的使用
+			对文件进行基本操作，对内容不能进行操作
+		IO原理及流的分类
+			不能对文件进行基本操作，能对内容进行操作
+			文件流
+				（FileInputStream / FileOutputStream ：非文本文件（图片+视频）（字节流）
+				（FileReader / FileWriter：文本文件（字符流）
+			缓冲流（主要编程）
+				（BufferedInputStream / BufferedOutputStream 
+				（BufferedReader / BufferedWriter
+		2.理解
+		对象流（序列化，反序列化  ObjectInputStream / ObjectOutputStream）
+		随机存取文件流（ReadomAccessFile）
+		3.知道
+		转换流（字节和字符之间的转换）（InputStreamReader / OutputStreamWriter）
+		标准输入/输出流	System.out / System.in 
+		打印流（PrintStream / PrintWriter）
+		数据流（DataInputStream / DataOutputStream）
+		【注意事项】
+		1，doc需要用字节的形式去读写，因为它其中可能含有图片
+		
+		4.使用练习
+			<A>分别使用字节流和字符流完成以下程序
+			1.在指定位的路径下新建一个.txt文件“test.txt”，利用程序在文件中写入如下内容
+				“Java是一种可以撰写跨平台应用软件的面向对象的程序设计语言，
+				是由Sun Microsystems公司于1995年5月推出的Java程序设计语言和
+				Java平台（即JavaSE, JavaEE, JavaME）的总称。Java 技术具有卓越的
+				通用性、高效性、平台移植性和安全性，广泛应用于个人PC、数据中心、
+				游戏控制台、科学超级计算机、移动电话和互联网，同时拥有全球最大的开发者专业社群。
+				在全球云计算和移动互联网的产业环境下，Java更具备了显著优势和广阔前景。”
+			2.利用程序读取test.txt文件内容，并在控制台打印
+			3.利用程序复制test.txt为test1.txt
+			4.TestInputAndReaderStream.java(day13)
+
+
+	描述
+		1.1Java.io.File类的使用
+			《A》特点
+			* 1.凡是与输入、输出相关的类、接口等都定义在java.io包下
+			* 2.File是一个类，可以有构造器创建其对象。此对象对应着一个文件（.txt .avi .doc .ppt .mp3 .jpg）或文件目录
+			* 3.File类对象是与平台无关的。
+			* 4.File中的方法，仅涉及到如何创建、删除、重命名等等。只要涉及文件内容的，File是无能为力的，必须由io流来完成。
+			* 5.File类的对象常作为io流的具体类的构造器的形参。
+			《B》方法
+				11文件操作相关+目录操作相关
+				createNewFile()
+				delete()
+				mkDir():创建一个文件目录。只有在上层文件目录存在的情况下，才能返回true
+				mkDirs():创建一个文件目录。若上层文件目录不存在，一并创建
+				list()
+				listFiles()
+
+				public void test3() throws IOException{
+					File file1 = new File("E:\\Users\\danay\\workspace\\java\\hello1.txt");  // 打开方式一
+			                //File file1 = new File("E:/Users/danay/workspace/java/hello.txt");  // 打开方式二
+					System.out.println(file1.delete());
+					
+					if(!file1.exists()){
+						boolean b = file1.createNewFile();   // 创建文件
+						System.out.println(b);
+					}
+					
+					File file2 = new File("E:\\Users\\danay\\workspace\\java");
+					if(!file2.exists()){
+						boolean b = file2.mkdirs();
+						System.out.println(b);
+					}
+					
+					// 遍历该绝对路径下的所有文件名（根据长度+listFiles（））
+					File file3 = new File("E:\\Users\\danay\\workspace\\java");
+					String[] strs = file3.list();
+					for(int i = 0;i < strs.length;i++){
+						System.out.println(strs[i]);
+					}		
+					System.out.println();
+					
+					File[] files = file3.listFiles();
+					for(int i = 0;i < files.length;i++){
+						System.out.println(files[i].getName());
+					}
+				}
+
+				12文件检测
+				exists()：是否存在
+				canWrite()：可写
+				canRead()：可读
+				isFile()：是文件
+				isDirectory()：是目录
+				lastModified()：最后一次被更改的时间
+				length()：长度
+				
+				public void test2(){
+					File file1 = new File("E:\\Users\\danay\\workspace\\java\\hello1.txt");
+					File file2 = new File("hello1.txt");
+					
+					System.out.println(file1.exists());
+					System.out.println(file1.canWrite());
+					System.out.println(file1.canRead());
+					System.out.println(file1.isFile());
+					System.out.println(file1.isDirectory());
+					System.out.println(new Date(file1.lastModified()));
+					System.out.println(file1.length());
+					
+					System.out.println();
+					
+					System.out.println(file2.exists());
+					System.out.println(file2.canWrite());
+					System.out.println(file2.canRead());
+					System.out.println(file2.isFile());
+					System.out.println(file2.isDirectory());
+					System.out.println(new Date(file2.lastModified()));
+					System.out.println(file2.length());				
+				}
+				
+				13路径：
+				 * 绝对路径：包括盘符在内的完整的文件路径
+				 * 相对路径：在当前文件目录下的文件的路径
+				 * 
+				 *  访问文件名
+				    getName() ： 获取名称
+				    getPath() ：获取路径
+				    getAbsoluteFile() ：获取绝对文件路径
+				    getAbsolutePath() ：获取绝对路径
+				    getParent() ：获取上一级目录
+				    renameTo(File newName) ：将文件名修改为newName （性惨中的File必须不存在）
+
+				public void test1(){
+					File file1 = new File("E:\\Users\\danay\\workspace\\java\\hello1.txt");
+					File file2 = new File("hello1.txt");
+					
+					File file3 = new File("E:\\Users\\danay\\workspace\\java");
+					File file4 = new File("E:\\Users\\danay\\workspace");
+					
+					System.out.println(file1.getName());
+					System.out.println(file1.getPath());
+					System.out.println(file1.getAbsoluteFile());
+					System.out.println(file1.getParent());
+					System.out.println(file1.getAbsolutePath());
+					
+					System.out.println();
+					
+					System.out.println(file3.getName());
+					System.out.println(file3.getPath());
+					System.out.println(file3.getAbsoluteFile());
+					System.out.println(file3.getParent());
+					System.out.println(file3.getAbsolutePath());
+					
+					//renameTo(File newName):重命名
+					//file1.renameTo(file2):file1重命名为file2.要求：file1文件一定存在，file2一定不存在
+					boolean b = file1.renameTo(file2);
+					System.out.println(b);
+					
+					boolean b1 = file4.renameTo(file3);
+					System.out.println(b1);
+				}
+		1.2IO原理及流的分类
+			1.21文件流(节点流)
+				（字节流：FileInputStream / FileOutputStream ——视频，音频，图片
+					FileInputStream练习
+						@Test
+						public void testInputStream3() {
+							FileInputStream fis = null;
+							try {
+								File file = new File("hello1.txt");
+								fis = new FileInputStream(file);
+								byte[] b = new byte[20]; 
+								int len;
+								while((len = fis.read(b)) != -1) {
+									System.out.print(new String(b, 0, len));
+								}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} finally {
+								try {
+									fis.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}		
+							}
+						}
+						【注意事项】
+						1.read()按字节读取文件，如果文件没有返回-1
+						2.该输入的文件要求必须存在（不然就会抛出文件异常）
+						3.因为要关闭输入流，来节约内存，所以不能throws来抛异常，用try-catch的方式处理异常
+						4.如果是一个一个的字节来读取，占着空间+速度很慢，将按数组的方式读取比较好（水站送水，一次送多桶，节约时间）
+						5.缺点：也是字节流的缺点：不能分行来读取+不能读汉字
+
+					FileOutputStream练习（fileI的内容复制到fileO中）
+						@Test
+						public void TestInputOutputStream() {
+							FileInputStream fisI = null;
+							FileOutputStream fosO = null;
+							try {
+								File fileI = new File("1.wmv");
+								fisI = new FileInputStream(fileI);
+								File fileO = new File("2.wmv");
+								fosO = new FileOutputStream(fileO);
+								
+								byte[] b = new byte[20];
+								int len;
+								while((len = fisI.read(b)) != -1) {
+									 // 因为b为字节数组，所以写入的时候必须长度来存，不能用fosO.write(b)
+									fosO.write(b, 0, len);  
+								}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} finally {
+								try {
+									System.out.println("fileI的内容复制到fileO中，复制完成！！");
+									fisI.close();
+									fosO.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}			
+							}		
+						}
+						【注意事项】
+						1.因为b为字节数组，所以写入的时候必须fosO.write(b, 0, len)，不能用fosO.write(b)
+						2.如果写入的时字符串，必须用.getBytes()将其转换成字节的形式才可以写进去了
+						3.fileO这个文件开始可以没有，就是有FileOutputStream也会创建新的将其覆盖
+						4.只有在处理非文本文件的时候才用
+
+				（字符流：FileReader / FileWriter——文本文件.doc+.txt
+					【注意事项】
+					1.方法和字节流的方式相同，不过是将字节byte改成字符char既可
+					2.但是它的应用比字节流的范围小：不能处理非文本文档的文件
+					3.FileWriter写入的时候，可以直接写入字符串fw.write("qwert");
+					4.处理文本文件的时候用这个（可以处理汉字+效率较高）
+
+			1.22缓冲流（处理流）
+				（字节缓冲流：BufferedInputStream / BufferedOutputStream 					
+					@Test
+					File fileI = new File("1.wmv");
+					FileInputStream fis = new FileInputStream(fileI);
+					bis = new BufferedInputStream(fis);
+					【注意事项】
+					1.和FileInputStream流相比，处理相率更高（286 VS 8845）
+					2.处理方式和FileInputStream流的处理方式相同
+					3.关闭的时候只需要关闭bis，系统会自动关闭fis+fileI流
+					4.在写或读完之后，调用flush()，更新一下缓存，如：bosO.flush();
+
+				（字符缓冲流：BufferedReader / BufferedWriter
+					@Test
+					public void testBufferReaderWriter() {
+						BufferedReader bfr = null;
+						BufferedWriter bfw = null;
+						try {
+							File fileI = new File("hello1.txt");
+							File fileO = new File("hello2.txt");
+							FileReader fr = new FileReader(fileI);
+							FileWriter fw = new FileWriter(fileO);
+							bfr = new BufferedReader(fr);
+							bfw = new BufferedWriter(fw);
+							char[] c = new char[2];
+							int len;
+							// 读取
+							String str;
+							System.out.println("readLine()读取文件…………");
+							System.out.println("复制文件…………");
+							while((str = bfr.readLine()) != null) {    // 用来来判断下一行是否有效既可
+								System.out.println(str);
+								bfw.write(str);
+								bfw.newLine();
+								bfw.flush();
+							}
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} finally {	
+							System.out.println("复制完成……");
+							if(bfw != null){			
+								try {
+									bfw.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							if(bfr != null){			
+								try {
+									bfr.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+						
+					}
+					【注意事项】
+					1.字符缓冲流BufferedReader含有readLine（）的方法，用来来判断下一行是否有效既可（之前的方法也可以）
+					2.字符缓冲流BufferedWriter写入时可以用bfw.write(str);
+					3.BufferedWriter写入之后可以用newLine（）方法换行
+					4.写完的最好最好用bfw.flush(),清空缓冲区

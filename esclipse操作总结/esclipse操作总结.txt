@@ -1,0 +1,31 @@
+Junit单元测试类
+		 * 1.当前工程下-右键build path-add libraries-Junit4
+		 * 2.在主类中,创建一个空参的无返回值的方法，（如：public void test1()）用于代码的测试，方法上声明：@Test
+		 * 3.导入import org.junit.Test;
+		 * 4.方法名1()的方法中，进行代码的编写。
+		 * 5.测试：双击方法名，右键run as-junit Test即可。
+		 练习：day3中TestJuint.java
+
+向main方法中传值
+		eclipse
+			在要运行的程序中右键，点击“run as”，然后选择“run configurations”
+			打开一个窗口，在左边选择自己要运行的.java文件，然后选择“Arguments”
+			在”Program arguments“中输入向主函数传入的数组（用空格隔开，例如”小王 小明 小红 小绿“）
+			然后选择“Apply”按钮，最后点击“Run”按钮，就可以实现向主函数传值得功能
+		命令行
+			javac+Java之后，直接输入向主函数传入的数值，例如“小王” “小明” “小红” "小绿"
+快捷键
+	Alt+上下箭头，移动改行
+	Alt+Ctrl+上下箭头，复制该行到某一行
+	Ctrl+D：删除该行
+	添加快捷键：sysout
+		windows-->preferences——>General——>keys
+		——>keys中找到Content Assist——>在Binding中改成Atl+/——>点击OK既可
+
+怎么解决eclipse的source not found change  atttached  source
+	Window-->preferences-->java-->installed JRE-->双击.JRE类库-->进入JREDefinition界面，点击Add Extenternal JAR
+		，选择库中src.zip-->双击进入JREDefinition界面-->点击完成即可
+
+
+
+

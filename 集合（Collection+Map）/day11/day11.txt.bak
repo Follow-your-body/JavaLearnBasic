@@ -1,0 +1,21 @@
+集合的高级应用：泛型
+	来源（TestGeneric.java中testgeneric1（））				
+	在集合中使用泛型
+	自定义泛型类，泛型接口，泛型方法
+	泛型与继承的关系
+		泛型和继承的关系（泛型中的数据类型是不可以有这样的类型）
+		练习 TestGeneric.java中的testgeneric3（）
+		如果该类为泛型，类中使用到该泛型的泛型方法不能是static类型
+		不能再try-catch的形参中使用类中定义的泛型类型
+		练习 Order.java中show()方法
+	通配符？（理解）
+		list<A>和list<B>都是list<?>的子类
+			允许遍历对象
+			不允许写入对象（null可以）
+		？extends A:可以存放A及其子类(<=)
+		？super A:可以存放A及其父类（>=）
+		练习 TestGeneric.java中的testgeneric4（）
+	核心思想：把一个集合中的内容限制为一个特定的数据类型
+	练习
+		集合中使用泛型：Employee1.java  Employee.java  MyDate.java TestEmployee.java
+		自定义泛型类的使用

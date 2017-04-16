@@ -1,0 +1,365 @@
+（学习时间：day13）
+	主要内容
+		1.重点
+		Java.io.File类的使用
+			对文件进行基本操作，对内容不能进行操作
+		IO原理及流的分类
+			不能对文件进行基本操作，能对内容进行操作
+			文件流
+				（FileInputStream / FileOutputStream ：非文本文件（图片+视频）（字节流）
+				（FileReader / FileWriter：文本文件（字符流）
+			缓冲流（主要编程）
+				（BufferedInputStream / BufferedOutputStream 
+				（BufferedReader / BufferedWriter
+		2.理解
+		对象流（序列化，反序列化  ObjectInputStream / ObjectOutputStream）
+		随机存取文件流（ReadomAccessFile）
+		3.知道
+		转换流（字节和字符之间的转换）（InputStreamReader / OutputStreamWriter）
+		标准输入/输出流	System.out / System.in 
+		打印流（PrintStream / PrintWriter）
+		数据流（DataInputStream / DataOutputStream）
+		【注意事项】
+		1，doc需要用字节的形式去读写，因为它其中可能含有图片
+		
+
+
+		2.1对象流（序列化，反序列化  ObjectInputStream / ObjectOutputStream）
+			特点
+				1，将对象以二进制流的形式存储到磁盘或硬盘中，此二进制流可以用来远距离传输，
+					传送到之后可以通过反序列化机制读取对象的信息，从而进行运用，是JavaEE中的RMI中的一种。
+
+				练习：对象序列化传送到“test.txt”中，然后通过反序列化机制运用该对象。
+					class Person implements Serializable{
+						String name;
+						Integer age;
+						private static final long serialVersionUID = 23425124521L;
+						
+						public Person(String name, Integer age) {
+							super();
+							this.name = name;
+							this.age = age;
+						}
+						@Override
+						public String toString() {
+							return "Person [name=" + name + ", age=" + age + "]";
+						}	
+					}
+					【注意事项】
+					1.要实现序列化的类： 1.要求此类是可序列化的：实现Serializable接口（告知该类可序列化）
+					2.提供一个版本号：private static final long serialVersionUID
+						硬盘呢地址序列号，默认存储地址，最好加上（不然系统会自动创建赋值）
+					3.使用static或transient修饰的属性，不可实现序列化（读取的对象的属性都变成了null）
+					3.只要是该类是可序列化的，那么他的父类也必须是（如果该类的实例化属性用到了父类的信息的话）
+				《a》序列化
+					@Test
+					public void testObjectOutputStream() {		
+						Person p1 = new Person("danay", 12);
+						Person p2 = new Person("anna", 23);
+						ObjectOutputStream oos = null;
+						try {
+							FileOutputStream fos = new FileOutputStream("test.txt");
+							oos = new ObjectOutputStream(fos);
+							oos.writeObject(p1);
+							oos.flush();
+							oos.writeObject(p2);
+							oos.flush();
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							System.out.println("序列化机制，将获取的对象存入硬盘中");
+							if (oos != null) {				
+								try {
+									oos.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}		
+							}
+						}
+					}
+					【注意事项】
+					 对象流——序列化:  ObjectOutputStream-->FileOutputStream
+
+				《b》反序列化
+					@Test
+					public void testObjectInputStream() {		
+						
+							ObjectInputStream ois = null;
+							try {
+								ois = new ObjectInputStream(new FileInputStream("test.txt"));
+								Person p1 = (Person) ois.readObject();
+								System.out.println(p1);
+								Person p2 = (Person) ois.readObject();
+								System.out.println(p2);
+							} catch (FileNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} finally {
+								System.out.println("反序列化机制，将存入硬盘的对象得到使用");
+								if(ois != null) {					
+									try {
+										ois.close();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							}
+							
+					}
+					【注意事项】
+					 对象流——反序列化: ObjectInputStream--> FileInputStream
+
+		2.3随机存取文件流（ReadomAccessFile）
+			特点：支持随机访问的方式，随机的读写任意位置的内容
+			方法
+				long getFIlePointer():获取文件记录指针的当前位置
+				void see（long pos）：类对象可以自由的移动记录指针
+			构造器
+				public void RandomAccessFile(File file, String mode)
+				public randomAcceFile（File file， String mode）
+				mode：r|rw|rwd(读+写+同步)|rws(读写同步文件内容和元数据的更新)
+			练习
+				任意位置的覆盖（将指针4后覆盖“把这些信息插入进来”）
+					@Test
+					public void testRandomAccessFile1() {
+						File file = new File("test.txt");
+						RandomAccessFile raf1 = null;
+						try {
+							RandomAccessFile raf = new RandomAccessFile(file, "r");
+							raf1 = new RandomAccessFile("test1.txt","rw");
+							byte[] b = new byte[20];
+							int len;
+							while((len = raf.read(b)) != -1) {
+								raf1.write(b);
+							}
+							// 在指定位置实现覆盖的效果（void seek（long pos）：类对象可以自由的移动记录指针）
+							raf1.seek(10);
+							raf1.write("这是指定位置加入的信息。".getBytes());
+							
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} finally {
+							if(raf1 != null) {				
+								try {
+									raf1.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}		
+					}
+					【注意事项】
+					1.在指定位置实现覆盖的效果（void seek（long pos）：类对象可以自由的移动记录指针）
+
+				任意位置插入					
+					@Test
+					public void testRandomAccessFile2() {
+						RandomAccessFile raf1 = null;
+						try {
+							raf1 = new RandomAccessFile("test1.txt","rw");
+							
+							int len;
+							byte[] b = new byte[1024];
+							StringBuffer sb = new StringBuffer();
+							raf1.seek(4);
+							while((len = raf1.read()) != -1) {
+								sb.append(new String(b, 0, len));
+							}
+							raf1.seek(4);
+							raf1.write("把这些信息插入进来".getBytes());
+							raf1.write(sb.toString().getBytes());
+							
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} finally {
+							if(raf1 != null) {				
+								try {
+									raf1.close();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}		
+					}
+					【注意事项】
+					1.获取要插入的指针那行后面所有的信息，在该指针后面覆盖所要插入的信息，再写进原来获取的信息即可
+
+
+		3.1转换流（字节和字符之间的转换）
+			（InputStreamReader ：编码：字符-->字节
+			（OutputStreamWriter ：解码：字节-->字符
+				练习  
+				（File+FileInputStream+InputStreamReader+BufferReader） 字节流+字符处理流
+				（File+FileOutputStream+OutputStreamWriter+BufferWriter）
+				@Test 
+				public void testOtherStream1() {
+					BufferedReader br = null;
+					BufferedWriter bw = null;
+					try {
+						File file = new File("hello1.txt");
+						FileInputStream  fis = new FileInputStream (file);   
+						InputStreamReader isr = new InputStreamReader(fis, "GBK");
+						br = new BufferedReader(isr);
+						
+						FileOutputStream fow = new FileOutputStream(file);
+						OutputStreamWriter osw = new OutputStreamWriter(fow, "GBK");
+						bw = new BufferedWriter(osw);
+						
+						String str;
+						while((str = br.readLine()) != null) {
+							bw.write(str);
+							bw.newLine();
+							bw.flush();
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {			
+						if(bw != null) {			
+							try {
+								bw.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						if(br != null) {			
+							try {
+								br.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					【注意事项】
+					1.这个运行起来看不到效果
+					2.就像文件编写和保存中的存储形式不同一样（unicode VS UTF-8）
+
+			3.2标准输入/输出流
+				System.out / System.in 
+				从键盘输入字符串，要求将读取到的整行字符串转成大写输出。然后继续进行输入操作，直至当输入“e”或者“exit”时，退出程序。
+				@Test
+				public void testOtherStream2() {
+					BufferedReader br = null;
+					try {
+						InputStream in = System.in;   // 可以用InputStream将输入流直接写入
+						OutputStream out = System.out;
+						InputStreamReader isr = new InputStreamReader(in);   // 将字节转换成字符流处理
+						br = new BufferedReader(isr);
+						String str;
+						while(true) {
+							System.out.println("请输入字符串：");
+							str = br.readLine();
+							if(str.equalsIgnoreCase("e") || str.equalsIgnoreCase("exit")) {
+								break;
+							}
+							System.out.println(str.toUpperCase());
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						if(br != null) {				
+							try {
+								br.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				【注意事项】
+				1.可以用InputStream将输入流直接写入
+				2.标砖的就是我们经常的sysout，至于输入，这个还不太理解
+				3.像先引用File类一样，先调用这个，然后将该类放入缓冲流中处理即可
+
+			3.3打印流（PrintStream / PrintWriter）
+				@Test
+				public void testPrintStream() {
+					PrintStream ps = null;
+					try {
+						File file = new File("print.txt");
+						if(file.exists()) {
+							file.createNewFile();
+						}
+						FileOutputStream fos = new FileOutputStream(file);
+						ps = new PrintStream(fos, true);   // 创建打印对象（确定输出地点）
+						if(ps != null) {
+							System.setOut(ps);  // 将对象设置输出
+						}
+						for(int i = 0; i <= 255; i++) {  // 输出内容（直接输出到已经设置好的文件上）
+							System.out.print((char)i);
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						if(ps != null) {				
+							ps.close();
+						}
+					}		
+				}
+				【注意事项】
+				1.创建输出对象，将对象设置为输出地点，然后在输出才能将输出内容输出到对应的位置上
+
+			3.4数据流（DataInputStream / DataOutputStream）
+				@Test 
+				public void testDataInputStream() {
+					DataOutputStream dis = null;
+					try {
+						File file = new File("test.txt");
+						if(file.exists()) {
+							file.createNewFile();
+						}
+						FileOutputStream fos = new FileOutputStream(file);
+						dis = new DataOutputStream(fos);
+						dis.writeInt(1234);
+						dis.writeUTF("我是中国人");
+						dis.writeChar('0');
+						dis.writeBoolean(true);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						if(dis != null) {				
+							try {
+								dis.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					【注意事项】
+					1.数据流：用来处理基本数据类型、String、字节数组的数据:DataInputStream DataOutputStream
+					2.DataInputStream / DataOutputStream
+					3.和缓冲流的用法相同，是处理流的一种
+

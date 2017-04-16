@@ -1,0 +1,23 @@
+枚举和注解
+	枚举
+		如何定义枚举类————>Season类
+		如何使用enum定义枚举类————Season1类
+			枚举类的主要方法：values()+valueof()
+			实现接口的枚举类:枚举继承接口————info接口+Season2类
+		练习：TestSeason.java
+
+	注解（Annotation）
+	JDK中提供的常用注解
+		@Override:重写父类方法
+		@Deprecated:用于表示某个程序元素（类/方法）已过时
+		@SuppressWarnings：抑制编译器警告
+	如何自定义一个注解
+		public @interface 注解名称 {
+			String[] values();
+		}
+	元注解(了解)
+		Retention
+		Target
+		Documented
+		Inherited
+	练习：MyAnnotation.java  TestAnnotation.java

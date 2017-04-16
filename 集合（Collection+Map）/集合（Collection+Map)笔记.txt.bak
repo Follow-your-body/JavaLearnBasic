@@ -1,0 +1,144 @@
+集合类（day7+day8+day9+day10+day11）
+	特点：长度不固定的数组
+	分类
+		Collection接口（单个元素）
+			List接口（ArrayList+LInkedLIst）（）
+			Set接口（HashSet+LinkedSet+TreeSet）
+		Map接口（HashMap+TreeMap）（元素对）
+			
+	Collection接口
+		add(E e)+remove(Object o)+isEmpty()+iterator()+size()
+		练习：RestCollection.java
+	
+	Collection子接口之一
+		Set接口（元素无序+不可重复）
+			HashSet(主要实现类)
+				特点
+					>无序性：真正的无序性，！=随机型，值得是元素在底层存储的位置是无序的
+					>不可重复性：当Set中添加进相同的元素的时候，后面的这个不能添加进去
+						说明：要求添加进Set中的元素所在的类，一定要重写equals()和HashCode（）方法
+							进而保证Set中元素的不可重复性
+					>存储方式：使用哈希算法，哈希数值相同的值不可重复加入
+						当向Set中添加对象时，首先调用此对象所在类的HashCode（）方法，计算此时对象的哈希值，
+						此哈希值决定了对象在Set中的存储位置，若此位置之前没有对象存储，则这个对象直接存储到此位置，
+						若此位置已有对象存储，再通过equals（）比较这两个对象是否相同。
+						如果相同，后一个对象就不能添加进来，反之两个对象都做到同一个位置（不建议这样）
+						要求：HashCode方法和equal方法一致。
+			LinkedHashSet
+				特点
+					>维护了一个添加进集合的顺序，导致当我们遍历LinkedHashSet集合元素时，是按照添加进去的顺序遍历
+						方法和HashSet类中的方法相同
+					>是HashSet的子类
+					>根据元素的hashcode值来决定元素的存储位置，但是它同时使用链表维护元素的次序
+					 ，这使得元素看起来是以插入顺序保存的
+					>插入性能略低于HashSet，但是迭代访问Set里的全部元素时有很好的性能
+					>不允许集合元素重复
+			TreeSet
+				特点
+					>向TreeSet中添加的元素必须是《同一个类型》
+					>可以按照添加进集合的元素指定的顺序遍历(默认按照从小到大的顺序遍历)
+					>自然排序：要求自定义类实现java.lang.Comparable接口并重写compareTo（Object obj）
+						在此方法中，指明按照自定义类的哪个属性进行排序
+					>排序方式
+						<1>自然排序
+							向TreeSet中添加元素的类中继承Comparable接口，然后重写conpareTo（）方法，来进行属性的排序，但是会出现重复添加
+								set.add(new A("13", 14));		
+								set.add(new A("11", 14));	
+							因此要求conpareTo与hashCode+equals三者保持一致
+				以上练习：TestSet1.java  Person.java
+						<2>定制排序
+						定制排序（Comparator接口，子类中的compare重写）	
+						 * 1,创建一个实现了Comparator接口的类对象（匿名/不匿名），其中重写compare方法
+						 * 2,将此对象作为形参传递给TreeSet的构造器
+						 * 3,向TreeSet添加Comparator中的compare方法中设计的类的对象
+						 * 	>hashCode和equals,compare必须一致，也就是说重写compare时要将所有的属性优先级排序
+						 练习： TestSet1.java  Customer.java
+				练习： TestEmployee.java  MyDate.java Employee1.java
+
+	Collection子接口之二
+		List接口（元素有序+可重复）
+			ArrayList（主要实现类）
+				特点：增+删+改+查+插+长度-动态数组（顺序实现），重写equals（）方法
+				新增加的方法
+					void add(int index, Object ele)：增
+					Object remove(int index)：删
+					Object set(int index, Object ele)：改
+					Object get(int index)：查
+					boolean addAll(int index, Collection eles)：插			
+					int indexOf(Object obj)：obj首次出现的位置
+					int lastIndexOf(Object obj)：obj最后出现的位置			
+					List subList(int fromIndex, int toIndex)：切片
+				常用的方法
+					增（add） 删(remove,索引/值) 改（set） 查（get） 插（add（int index， Object obj）长度（size）） 	
+			LinkList（对于频繁的插入和删除操作）
+				特点：底层拿链表实现
+				方法：和ArrayList完全一样	
+			Vector（不用这个）
+				特点：古老的实现类+线程安全的
+			练习：TestList.java
+
+	Map接口
+		特点：有映射关系：key-value（entry都可以是任意引用类型的数据）
+			不允许重复（必须重写HashCode（）和equals（）方法）
+		常用方法
+			添加、删除操作
+				Object put(OBject key, Object value)
+				Object remove(Object key)
+				void putAll(Map t)
+				void clear()
+			元视图操作的方法（遍历）
+				Set keySet()
+				Collection values()
+				Set entrySet()
+			元素查询的操作
+				Object get（Object key）
+				boolean containsKey(Object key)
+				boolean containsValue(Object value)
+				int size()
+				boolean isEmpty()
+				boolean equals(Object obj)
+			存储方式
+				Key	--> Set来存
+				Values	--> Collection来存 
+				Key	--> Set来存
+
+		HashMap(主要实现类)
+			TestMap.java中testHashMap1()和testHashMap2()
+		LInkedHashMap：使用链表添加进Map中的顺序，故遍历Map时，时按照添加的顺序
+			练习：  TestMap.java中testLinkedHashMap()
+		TreeMap(可排序)《同一类型》（key必须是同一类型，values不一定是同意类型）
+			按照添加进Map中的指定属性key进行排序
+			和TreeSet完全一样：自定义排序+定制排序
+			练习  TestMap.java中TestTreeMap1()和TestTreeMap2
+		Hashtable（几乎不用）
+			特点：key-value都为String类型，线程安全的，不可以添加null键
+			Properties
+				使用Properties属性处理留文件类型
+			练习 TestMap.java中testHashTable()方法
+		练习 TestMap.java  Person.java  Person1.java
+
+	collections工具的使用:操作collection和mao的工具类
+		方法
+			reverse(List):翻转List中的元素
+			shuffle(List)：对List集合元素进行帅选排序
+			sort(List, Comparator)：根据指定的Comparator产生的顺序对List集合元素进行排序
+			swap(List, int, int)：将指定List集合的i处元素元素进行排序
+		用法：处理集合排序（翻转+排序+随机+最大+最小+替换）
+		练习：TestMap.java  Person.java  Person1.java
+	 
+遍历的方式
+	for循环
+		对象：数组
+	增强for循环
+		对象：数组+集合对象
+	迭代器
+		对象：集合对象
+	练习 TestIterator.java
+快捷键
+	Alt+上下箭头，移动改行
+	Alt+Ctrl+上下箭头，复制该行到某一行
+	Ctrl+D：删除该行
+	添加快捷键：sysout
+		windows-->preferences——>General——>keys
+		——>keys中找到Content Assist——>在Binding中改成Atl+/——>点击OK既可
+

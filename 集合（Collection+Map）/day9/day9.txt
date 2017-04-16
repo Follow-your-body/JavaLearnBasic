@@ -1,0 +1,48 @@
+集合
+	Map接口
+		特点：有映射关系：key-value（entry都可以是任意引用类型的数据）
+			不允许重复（必须重写HashCode（）和equals（）方法）
+		常用方法
+			添加、删除操作
+				Object put(OBject key, Object value)
+				Object remove(Object key)
+				void putAll(Map t)
+				void clear()
+			元视图操作的方法（遍历）
+				Set keySet()
+				Collection values()
+				Set entrySet()
+			元素查询的操作
+				Object get（Object key）
+				boolean containsKey(Object key)
+				boolean containsValue(Object value)
+				int size()
+				boolean isEmpty()
+				boolean equals(Object obj)
+			存储方式
+				Key	--> Set来存
+				Values	--> Collection来存 
+				Key	--> Set来存
+		HashMap(主要实现类)
+			TestMap.java中testHashMap1()和testHashMap2()
+		LInkedHashMap：使用链表添加进Map中的顺序，故遍历Map时，时按照添加的顺序
+			练习：  TestMap.java中testLinkedHashMap()
+		TreeMap(可排序)《同一类型》（key必须是同一类型，values不一定是同意类型）
+			按照添加进Map中的指定属性key进行排序
+			和TreeSet完全一样：自定义排序+定制排序
+			练习  TestMap.java中TestTreeMap1()和TestTreeMap2
+		Hashtable（几乎不用）
+			特点：key-value都为String类型，线程安全的，不可以添加null键
+			Properties
+				使用Properties属性处理留文件类型
+			练习 TestMap.java中testHashTable()方法
+		练习 TestMap.java  Person.java  Person1.java
+
+	collections工具的使用:操作collection和mao的工具类
+		方法
+			reverse(List):翻转List中的元素
+			shuffle(List)：对List集合元素进行帅选排序
+			sort(List, Comparator)：根据指定的Comparator产生的顺序对List集合元素进行排序
+			swap(List, int, int)：将指定List集合的i处元素元素进行排序
+		用法：处理集合排序（翻转+排序+随机+最大+最小+替换）
+		练习：TestMap.java  Person.java  Person1.java

@@ -1,0 +1,17 @@
+集合的高级应用：泛型
+	来源（TestGeneric.java中testgeneric1（））
+		>1解决元素存储的安全问题<本来想存储String类型的数据，但是存储时有可能该数据不符合要求>
+		>2解决获取数据元素时，需要类型强转的问题<强转可能出现类型转换的异常>
+		>3使用方式：集合类型<引用数据类型> 集合变量名 = new 该集合类型中的类名<>();
+			    集合类型<强制引用数据类型> 集合变量名 = 强制转换名.对应的方法;
+				
+	在集合中使用泛型(重点)
+		Collection
+			Set：TestGeneric.java中testgeneric2（）
+			List：TestGeneric.java中testgeneric2（）
+		Map：TestGeneric.java中testgeneric2（）
+		练习：TestGeneric.java
+	自定义泛型类，泛型接口，泛型方法（理解）
+		泛型类：Order.java，调用TestGeneric.java中的testOrder（）
+		理解：处理未定义的数据
+		练习：TestGeneric.java   Order.java

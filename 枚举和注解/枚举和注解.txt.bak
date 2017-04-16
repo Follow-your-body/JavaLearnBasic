@@ -1,0 +1,146 @@
+枚举和注解
+	《一》枚举
+		特点：固定对象+不可修改
+		如何定义枚举类————>Season类
+		如何使用enum定义枚举类————Season1类
+			枚举类的主要方法：values()+valueof()
+			实现接口的枚举类:枚举继承接口————info接口+Season2类
+		练习：TestSeason.java
+
+	实例
+		1.如何定义枚举类
+			class Season {
+				// 1提供类的属性，声明为private+fimal
+				private final String seasonName;
+				private final String seasonDesc;
+				
+				// 2声明为final的属性在构造器中初始化
+				private Season(String seasonName, String seasonDesc) {
+					super();
+					this.seasonName = seasonName;
+					this.seasonDesc = seasonDesc;
+				}
+				
+				// 3通过公共的方法来调用
+				public String getSeasonName() {
+					return seasonName;
+				}
+				public String getSeasonDesc() {
+					return seasonDesc;
+				}
+				@Override
+				public String toString() {
+					return "Season [seasonName=" + seasonName + ", seasonDesc=" + seasonDesc + "]";
+				}
+				
+				// 4创建枚举类的对象:将类声明为public final static 
+				public static final Season SPRING = new Season("spring", "春暖花开");
+				public static final Season SUMMER = new Season("summer", "夏日炎炎");
+				public static final Season AUTUMN = new Season("autumn", "秋高气爽");
+				public static final Season WINTER = new Season("winter", "白雪皑皑");				
+			}
+		2.如何使用enum定义枚举类
+			enum Season1 {
+				SPRING("spring", "春暖花开"),
+				SUMMER("summer", "夏日炎炎"),
+				AUTUMN("autumn", "秋高气爽"),
+				WINTER("winter", "白雪皑皑");	
+				
+				private final String seasonName;
+				private final String seasonDesc;
+				
+				private Season1(String seasonName, String seasonDesc) {
+					this.seasonName = seasonName;
+					this.seasonDesc = seasonDesc;
+				}
+				
+				public String getSeasonName() {
+					return seasonName;
+				}
+				public String getSeasonDesc() {
+					return seasonDesc;
+				}
+				@Override
+				public String toString() {
+					return "Season [seasonName=" + seasonName + ", seasonDesc=" + seasonDesc + "]";
+				}				
+			}
+		3.实现接口的枚举类:枚举继承接口
+			interface info {
+				void show();	
+			}
+
+			enum Season2 implements info {
+				SPRING("Spring", "穿暖花开"),
+				SUMMER("summer", "夏日炎炎") {
+					//枚举对象中可以定义接口中的方法
+					public void show() {
+						System.out.println("生如夏花");
+					}
+				};
+				
+				private String seasonName;
+				private String seasonDesc;
+				
+				private Season2(String seasonName, String seasonDesc) {
+					this.seasonName = seasonName;
+					this.seasonDesc = seasonDesc;
+				}
+
+				@Override
+				public void show() {
+					System.out.println("这是练习季节的描述问题");		
+				}				
+			}
+
+	《二》注解（Annotation）
+		JDK中提供的常用注解
+			@Override:重写父类方法
+			@Deprecated:用于表示某个程序元素（类/方法）已过时
+			@SuppressWarnings：抑制编译器警告
+		如何自定义一个注解
+			public @interface 注解名称 {
+				String[] values();
+			}
+		元注解(了解)
+			Retention
+			Target
+			Documented
+			Inherited
+		练习：MyAnnotation.java  TestAnnotation.java
+	实例
+		JDK中提供的常用注解
+			class Person {
+				String name;
+				int age;
+				
+				public Person() {
+					super();
+				}
+		
+				@Deprecated  // 告诉程序员，该类即将不被使用
+				public void walk() {
+					System.out.println("走路");
+				}
+				public void eat() {
+					System.out.println("吃饭");
+				}
+			}
+
+			class Student extends Person {
+				public Student(String name, int age) {
+					super(name, age);
+				}
+				@Override   // 表示重写
+				public void eat() {
+					System.out.println("学生吃饭");
+				}
+			}
+		如何自定义一个注解
+			public @interface MyAnnotation {
+				String values() default "hello";
+			}
+			// 调用
+			@MyAnnotation("hello")
+
+

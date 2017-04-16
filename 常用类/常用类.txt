@@ -1,0 +1,236 @@
+常用类
+	《String》
+	1.String类
+	2.StringBuffer类
+	3.StringBuilder类
+	《日期》
+	4.System类
+	5.Date类
+	6.SimpleDateDormat类
+	7.Calender类
+	《数据》
+	8.Math类
+	9.BigInteget和BigDecimal类
+理解
+	1.String类
+		代表不可变的字符数列，底层使用char[]存放+final(修改是新建一个String地址)
+			 * public int length() 
+			 * public char charAt(int index):返回在指定index位置的字符。index从0开始 
+			 * public boolean equals(Object anObject)：比较两个字符串是否相等。相等返回true。否则返回false 
+			 * public int compareTo(String anotherString) public int indexOf(String s)：返回s字符串在当前字符串中首次出现的位置。若没有，返回-1
+			 * public int indexOf(String s ,int startpoint)：返回s字符串从当前字符串startpoint位置开始的，首次出现的位置，没有时返回-1。 
+			 * public int lastIndexOf(String s):返回s字符串最后一次在当前字符串中出现的位置。若无，返回-1 
+			 * public int lastIndexOf(String s ,int startpoint) 
+			 * public boolean startsWith(String prefix):判断当前字符串是否以prefix开始。 
+			 * public boolean endsWith(String suffix)：判断当前字符串是否以suffix结束。 
+			 * public boolean regionMatches(int firstStart,String other,int otherStart ,int length):
+			 * 判断当前字符串从firstStart开始的子串与另一个字符串other从otherStart开始，length长度的字串是否equals
+
+			 * public String substring(int startpoint)
+			 * public String substring(int start,int end):返回从start开始到end结束的一个左闭右开的子串。start可以从0开始的。
+			 * pubic String replace(char oldChar,char newChar) : 代替（覆盖）
+			 * public String replaceAll(String old,String new)
+			 * public String trim()：去除当前字符串中首尾出现的空格，若有多个，就去除多个。
+			 * public String concat(String str):连接当前字符串与str
+			 * public String[] split(String regex)：按照regex将当前字符串拆分，拆分为多个字符串，整体返回值为String[]
+
+			 字符串+基本数据类型、数据类：	valueof（）	Integer.parseInt()
+			 字符串+字节数组：		getByte()	new String()
+			 字符串+字符数组：		toCharArray()	new String()
+
+				练习
+				String str1 = new String("1234567890");
+				String str2 = new String("123457890");
+				System.out.println("str1本身长度： " + str1);
+				System.out.println("length(): " + str1.length());
+				System.out.println("charAt(int index): " + str1.charAt(0));
+				System.out.println("equals(Object anObject): " + str1.equals(str2));
+				System.out.println("compareTo(String anotherString): " + str1.compareTo(str2));
+				System.out.println("startsWith(String prefix): " + str1.startsWith("123"));
+				System.out.println("endsWith(String prefix): " + str1.endsWith("123"));
+				System.out.println("regionMatches(int firstStart,String other,int otherStart ,int length): " 
+						+ str1.regionMatches(2, str2, 0, str2.length()));
+				
+				System.out.println("substring(int startpoint)" + str1.substring(1));
+				System.out.println("substring(int start,int end)" + str1.substring(1, 9));
+				System.out.println("replace(char oldChar,char newChar)" + str1.replace('1','2'));
+				System.out.println("replaceAll(String old,String new)" + str1.replaceAll("223","456   "));
+				System.out.println("trim()" + str1.trim());
+				System.out.println("concat(String str): " + str1.concat("asdfghn"));
+				System.out.println("split(String regex): " + str1.split(" "));	
+
+				//1.字符串 与基本数据类型、包装类之间转换
+				String str1 = new String("1234567890");
+				int i = Integer.parseInt(str1);
+				String str2 = String.valueOf(i);			
+				// 字符串与字节数组间的转换
+				byte[] b = str1.getBytes();
+				String str3 = new String(b);			
+				// 字符串与字符数组间的转换
+				char[] c = str1.toCharArray();
+				String str4 = new String(c);	
+		
+		 重写方法练习
+			1.模拟一个Trim方法，去除字符串两端的空格
+				public String TestStringTrim(String str) {
+					int start = 0;
+					int end = str.length() - 1;
+					while(start < end && str.charAt(start) == ' ') {
+						start++;
+					} 
+					while(start < end && str.charAt(end) == ' ') {
+						end--;
+					} 
+					return str.substring(start, end);		
+				}
+			2.将一个字符串进行反转，将字符串中指定的部分进行反转
+				public String testStringFunction2(String str, int start, int end) {
+					byte[] b = str.getBytes();
+					byte[] b1 = new byte[end + 1];
+					int j = 0;
+					for(int i = end; i >= start; i--, j++) {
+						b1[j] = b[i];
+					}
+					return new String(b1);
+				}
+				【思路】
+				1.倒序输出既可
+
+			3.获取一个字符串在另一个字符串中出现的次数（较难）
+				public int testStringFunction3(String str, String strOther) {
+					int count = 0;
+					int len;
+					while((len = strOther.indexOf(str)) != -1) {
+						count++;
+						strOther = strOther.substring(len + str.length());
+					}
+					return count;
+				}
+				【思路】
+				1.使用indexof（）查看首次出现的次数
+				2.然后将的查到的首次之前元素在数组中删除，然后再判断
+				3.直至indexof（）返回的值为-1
+
+			4.获取字符串中最大相同子串（难）
+				public String testStringFunction4(String str1, String str2) {
+					String MINStr = (str1.length() > str2.length())? str2 : str1;
+					String MAXStr = (str1.length() < str2.length())? str2 : str1;
+					int len = MINStr.length();
+					for(int i = 0; i < len; i++) {
+						for(int x = 0, y = len - i; y <= len; x++, y++){
+							String str = MINStr.substring(x, y);
+							if(MAXStr.contains(str)) {
+								return str;
+							}
+						}
+					}
+					return null;
+				}
+				【思路】
+				1.找到字符串最短的那一个，用它到另一个字符串中找相同子串
+				2.如果没有，最短那个字符串缩短一个（缩短哪个有后面决定），再去比较，直至找到
+			 5.对字符串进行自然顺序排序
+				public String testStringFunction5(String str) {
+					char[] c = str.toCharArray();
+					Arrays.sort(c);    // 数组也可以进行排序
+					return new String(c);
+				}
+				【思路】
+				将字符串分成字符，字符用Arrays.sort(char[])方法排序
+			
+	2.StringBuffer类：可变的字符序列，底层用数组实现
+		 StringBuffer append(String s),   StringBuffer append(int n) ,  
+		 StringBuffer append(Object o) ,  StringBuffer append(char n),
+		 StringBuffer append(long n),  StringBuffer append(boolean n),
+		 StringBuffer insert(int index, String str) 
+		 public StringBuffer reverse() :反转此StringBuffer
+		 StringBuffer delete(int startIndex, int endIndex) ,删除太多返回-1
+		 public char charAt(int n )
+		 public void setCharAt(int n ,char ch)
+		 StringBuffer replace( int startIndex ,int endIndex, String str) 
+		 public int indexOf(String str)
+		 public String substring(int start,int end)
+		 public int length() 		 
+		 总结（增+删+改+查+插+反转+长度）
+		 添加：append() 删除：delete(int i,int j) 修改：setCharAt(int index,char ch) 查 charAt(int n);
+		  插入：insert(int index,String str)  反转：reverse() 长度：length()
+
+	3.StringBuilder类
+		效率高于 > StringBuffer > String
+	
+	关于日期的类
+		4.System类
+		5.Date类
+			Date（）：使用Date类的无参数构造方法创建的对象可以获取本地当前时间
+			getTime():毫秒数（1970.1.1.00:00:00）
+			toString():将Date对象转换成以下的String（Fri 12 01:01:01 zz yy）
+		6.SimpleDateFormat类
+			SimpleDateFormat()
+			public SimpleDateFormat(String pattern) ：按pattern形式获取时间
+			public String format(Date date) ： 将date的时间格式化成SimpleDateFormat类的对象中定义的时间（格式化用）
+			public Date parse(String source) ： 将String形式的时间转换成SimpleDateFormat类的对象中定义的时间（解析用）
+			【理解】
+			1.SimpleDateFormat(String pattern)规定时间格式
+			2.format(Date date)：对象执行格式
+			3.对象解析字符串（格式必须和对象定义的格式一致）
+			
+			1.使用方式（格式化《固定格式+自定义格式》 + 解析）
+				@Test 
+				public void testSimpleDateFormat() throws ParseException {
+					
+					// 格式化一： 4/10/17 8:17 PM(默认格式)
+					SimpleDateFormat sdf = new SimpleDateFormat();
+					String str = sdf.format(new Date());
+					System.out.println(str); 
+					
+					// 格式化二: 2017-22-10 08:22:19（自定义格式）
+					SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+					String str1 = sdf1.format(new Date());
+					System.out.println(str1);
+					
+					// 解析：将任意格式的字符串时间转化成正常的时间(和pattern的格式必须相同)		
+					Date date1 = sdf.parse("4/10/17 8:40 PM");
+					System.out.println(date1);
+					date1 = sdf1.parse("2017-22-10 08:22:19");
+					System.out.println(date1);
+				}
+
+			2.练习：“三天打渔两天晒网”  2014-22-10 08:22:19 到现在是 打渔？晒网？
+				@Test
+				public void testSimpleDateFormat1() throws ParseException {
+					String str = "2014-22-10 08:22:19";
+					int day = getDay(str);
+					int workingDay = day % 5;
+					switch (workingDay) {
+					case 0 : System.out.println("筛网！");break;
+					case 1 : System.out.println("打渔！");break;
+					case 2 : System.out.println("打渔！");break;
+					case 3 : System.out.println("打渔！");break;
+					case 4 : System.out.println("筛网！");break;		
+					}		
+				}
+				public int getDay(String str1) throws ParseException {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+					Date date = sdf.parse(str1);
+					long milliTime = date.getTime();
+					Date date1 = new Date();
+					long milliTime1 = date1.getTime();
+					return (int)((milliTime1-milliTime)/1000/3600/24 + 1);
+				}
+
+		7.Calender类
+		//日历：Calendar类   get()/add()/set()/Date getTime()/setTime(Date d) 处理获取的时间
+		练习
+			@Test
+			public void testCalendar() {
+				Calendar c = Calendar.getInstance();
+				System.out.println("这月的第几天： " + c.get(Calendar.DAY_OF_MONTH));
+				c.add(Calendar.DAY_OF_MONTH, 2);
+				System.out.println("这月的第几天： " + c.get(Calendar.DAY_OF_MONTH));
+				c.set(Calendar.DAY_OF_MONTH, -2);
+				System.out.println("这月的第几天： " + c.get(Calendar.DAY_OF_MONTH));
+			}
+
+	8.Mamth类
+		常用函数
+	9.BigInteget和BigDecimal类：处理数额较大的类
